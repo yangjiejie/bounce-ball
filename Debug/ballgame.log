@@ -1,0 +1,15 @@
+﻿  main.c
+e:\vc\c++\ballgame\ballgame\main.c(119): warning C4133: 'function' : incompatible types - from 'char [13]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(131): warning C4133: 'function' : incompatible types - from 'char [42]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1075): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1080): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1150): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1155): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1161): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1228): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1233): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1239): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1306): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1311): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+e:\vc\c++\ballgame\ballgame\main.c(1495): warning C4133: 'function' : incompatible types - from 'char [18]' to 'LPCWSTR'
+  ballgame.vcxproj -> E:\vc\c++\ballgame\Debug\ballgame.exe

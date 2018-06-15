@@ -70,6 +70,7 @@ void selectMap();    //选择地图
 void playGame();     //游戏完成时
 int checkComplete(); //检测游戏是否完成
 
+
 void PrintBord();               //绘制木板和小球
 void PrintLev();                //初始化相关关卡
 void MoveBord(int orientation); //移动木板
@@ -102,7 +103,7 @@ char game_Map[20];      //游戏地图
 
 clock_t treaTime_Last, treaTime_Now; //宝物持续时间
 
-static const char *BALL_SHAPE[] = {"⊙", "◎", "●"};
+static const char *BALL_SHAPE[] = {"樊启迪", "◎", "●"};
 // =============================================================================
 // 主菜单
 
@@ -115,8 +116,18 @@ int main()
     // 	long lVolume;
     // 	mciSendString("status movie volume",chVolume,255,0);
     // 	lVolume=strtol(chVolume,NULL,10);
+	mciSendString("open cdaudio", NULL, 0, NULL);
+	char buf[50];
+	MCIERROR mciError = mciSendStringA("play music\\bg_music.mp3 repeat ", buf, strlen(buf), NULL);           //背景音乐
+	if (mciError)
+	{
 
-    mciSendString("play music\\bg_music.mp3 repeat ", NULL, 0, NULL);           //背景音乐
+		mciGetErrorStringA(mciError, buf, strlen(buf));
+		//AfxMessageBox(buf);
+		return;
+
+	}
+
     mciSendString("setaudio music\\bg_music.mp3 volume to 100", NULL, 0, NULL); //设置音量
 
     do
@@ -161,7 +172,7 @@ int mainGame()
     gotoxy(15, 5);
     printf("┏━━━━━━━━━━━━━━┓");
     gotoxy(15, 6);
-    printf("┃%2s%s%2s┃", "", "★弹弹乐★", "");
+    printf("┃%8s%s%2s┃", "", "★弹弹乐★", "");
     gotoxy(15, 7);
     printf("┗━━━━━━━━━━━━━━┛");
 
@@ -298,7 +309,7 @@ int mainGame()
             break;
 
         case ' ':
-        case 13:
+        case 13: //enter键
             return index;
             break;
         }
@@ -384,8 +395,8 @@ void runGame()
             }
 
             clockNow = clock(); // 计时
-            // 两次记时的间隔超过0.45秒
-            if (clockNow - clockLast > 0.2F * speed)
+            // 两次记时的间隔超过0.2秒
+            if (clockNow - clockLast > 0.05F * speed)
             {
                 clockLast = clockNow;
                 MoveBall(0);
@@ -544,7 +555,7 @@ void runGame()
 
         if (live)
         {
-            if ((ch = _getch()) == 32)
+            if ((ch = _getch()) == 32) // 空格暂停
                 stop = 0;
         }
     }
@@ -939,7 +950,7 @@ void PrintLev()
                 break;
             }
 
-            Sleep(10);
+            //Sleep(10);
         }
     }
 
@@ -957,8 +968,7 @@ void PrintBord()
     Ball[0].x = 19;
     Ball[0].y = 18;
     gotoxy(Ball[0].x, Ball[0].y);
-    printf("%s", BALL_SHAPE[0]);
-
+    printf("%6s", BALL_SHAPE[0]);
     //绘制木板
     SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     Bord.x = 18;
@@ -1059,7 +1069,7 @@ void MoveBall(int index)
     //右上
     if (Ball[index].x_Speed == 1 && Ball[index].y_Speed == 1)
     {
-        if (potVal[Ball[index].x][Ball[index].y - 1] == 4)
+        if (potVal[Ball[index].x][Ball[index].y - 1] == 4) // 碰到上天花板了
         {
             Ball[index].y_Speed = -1;
             PlaySound("music\\knock_1.wav", NULL, SND_FILENAME | SND_ASYNC);
@@ -1085,13 +1095,15 @@ void MoveBall(int index)
         {
             if (Ball[index].mode == 0)
             {
+				//黄色
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+
+                printf("%6s", ""); //先用空格清理先前的print 这种思路可以的哈
                 Ball[index].x = Ball[index].x + 1;
                 Ball[index].y = Ball[index].y - 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[0]);
+                printf("%6s", BALL_SHAPE[0]);
             }
             else if (Ball[index].mode == 1)
             {
@@ -1166,11 +1178,11 @@ void MoveBall(int index)
             {
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+                printf("%6s", "");
                 Ball[index].x = Ball[index].x + 1;
                 Ball[index].y = Ball[index].y + 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[0]);
+                printf("%6s", BALL_SHAPE[0]);
             }
             else if (Ball[index].mode == 1)
             {
@@ -1244,11 +1256,11 @@ void MoveBall(int index)
             {
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+                printf("%6s", "");
                 Ball[index].x = Ball[index].x - 1;
                 Ball[index].y = Ball[index].y + 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[0]);
+                printf("%6s", BALL_SHAPE[0]);
             }
             else if (Ball[index].mode == 1)
             {
@@ -1316,11 +1328,11 @@ void MoveBall(int index)
             {
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+                printf("%6s", "");
                 Ball[index].x = Ball[index].x - 1;
                 Ball[index].y = Ball[index].y - 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[0]);
+                printf("%6s", BALL_SHAPE[0]);
             }
             else if (Ball[index].mode == 1)
             {
@@ -1811,6 +1823,7 @@ void initGame(enum mode game_Mode)
 
     SetConsoleTextAttribute(g_hConsoleOutput, 0x0F);
     system("cls");
+	//使用白色前景绘制游戏边框
     SetConsoleTextAttribute(g_hConsoleOutput, 0xF0);
 
     for (i = LEFT; i <= RIGHT; i++)
@@ -1832,15 +1845,16 @@ void initGame(enum mode game_Mode)
     }
 
     SetConsoleTextAttribute(g_hConsoleOutput, 0x0F);
+	//边框绘制 end
 
     //完善边界
     for (i = TOP + 1; i < BUTTON + 3; i++)
     {
         gotoxy(LEFT + 1, i);
-        printf("%2s", "");
+        printf("%2s", "33");
 
         gotoxy(RIGHT - 1, i);
-        printf("%2s", "");
+        printf("%2s", "33");
     }
 
     switch (game_Mode)
@@ -1960,3 +1974,7 @@ int checkComplete() //检测游戏是否完成
 
     return 1;
 }
+
+
+
+
