@@ -381,13 +381,13 @@ void runGame()
                 case 'A':
                 case '4':
                 case 75:
-                    MoveBord(1);
+                    MoveBord(-1); // 左移动板子
                     break;
                 case 'd':
                 case 'D':
                 case '6':
                 case 77:
-                    MoveBord(2);
+                    MoveBord(1); //右移动板子
                     break;
                 case 32:
                     stop = 1;
@@ -396,7 +396,7 @@ void runGame()
 
             clockNow = clock(); // 计时
             // 两次记时的间隔超过0.2秒
-            if (clockNow - clockLast > 0.05F * speed)
+            if (clockNow - clockLast > 0.4F * speed)
             {
                 clockLast = clockNow;
                 MoveBall(0);
@@ -982,84 +982,57 @@ void PrintBord()
 //移动木板
 void MoveBord(int orientation)
 {
-    if (orientation == 1)
-    {
-        if (Bord.length == 1)
-        {
-            if (Bord.x > LEFT + 1)
-            {
-                Bord.x = Bord.x - 1;
-                SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                gotoxy(Bord.x, Bord.y);
-                printf("▔  ");
-                potVal[Bord.x][Bord.y] = 4;
-                potVal[Bord.x + 1][Bord.y] = 0;
-            }
-        }
-        else if (Bord.length == 3)
-        {
-            if (Bord.x > LEFT + 1)
-            {
-                Bord.x = Bord.x - 1;
-                SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                gotoxy(Bord.x, Bord.y);
-                printf("▔▔▔  ");
-                potVal[Bord.x][Bord.y] = 4;
-                potVal[Bord.x + 3][Bord.y] = 0;
-            }
-        }
-        else if (Bord.length == 5)
-        {
-            if (Bord.x > LEFT + 1)
-            {
-                Bord.x = Bord.x - 1;
-                SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                gotoxy(Bord.x, Bord.y);
-                printf("▔▔▔▔▔  ");
-                potVal[Bord.x][Bord.y] = 4;
-                potVal[Bord.x + 5][Bord.y] = 0;
-            }
-        }
-    }
-    else
-    {
-        if (Bord.length == 1)
-        {
-            if ((Bord.x + 1) < RIGHT)
-            {
-                SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                gotoxy(Bord.x, Bord.y);
-                printf("  ▔");
-                Bord.x = Bord.x + 1;
-                potVal[Bord.x][Bord.y] = 4;
-                potVal[Bord.x - 1][Bord.y] = 0;
-            }
-        }
-        else if (Bord.length == 3)
-        {
-            if ((Bord.x + 3) < RIGHT)
-            {
-                SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                gotoxy(Bord.x, Bord.y);
-                printf("  ▔▔▔");
-                Bord.x = Bord.x + 1;
-                potVal[Bord.x + 2][Bord.y] = 4;
-                potVal[Bord.x - 1][Bord.y] = 0;
-            }
-        }
-        else if (Bord.length == 5)
-        {
-            if ((Bord.x + 5) < RIGHT)
-            {
-                SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                gotoxy(Bord.x, Bord.y);
-                printf("  ▔▔▔▔▔");
-                Bord.x = Bord.x + 1;
-                potVal[Bord.x + 4][Bord.y] = 4;
-                potVal[Bord.x - 1][Bord.y] = 0;
-            }
-        }
-    }
+	if (Bord.x + orientation < LEFT || Bord.x + Bord.length +  orientation > RIGHT) return;
+	gotoxy(Bord.x, Bord.y);
+	Bord.x = Bord.x + orientation;
+	SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		
+
+	potVal[Bord.x][Bord.y] = 4;
+	if (orientation == -1)
+	{
+		potVal[Bord.x + Bord.length][Bord.y] = 0;
+	}
+	else
+	{
+		potVal[Bord.x - 1][Bord.y] = 0;
+	}
+	switch (Bord.length)
+	{
+	case 1:
+		if (orientation == -1)
+		{
+			printf("▔  ");
+		}
+		else
+		{
+			printf("  ▔");
+		}
+			
+		break;
+	case 3:
+		if (orientation == -1)
+		{
+			printf("▔▔▔  "); // 注意左移一格需要清除后面的2格所以这里2个空格很必要 
+		}
+		else
+		{
+			printf("  ▔▔▔");
+		}
+		break;
+	case 5:
+		if (orientation == -1)
+		{
+			printf("▔▔▔▔▔  ");
+		}
+		else
+		{
+			printf("  ▔▔▔▔▔");
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 //=================================================================================
@@ -1117,7 +1090,7 @@ void MoveBall(int index)
                 else if (potVal[Ball[index].x][Ball[index].y] == 0)
                 {
                     SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-                    printf("%2s", "");
+                    printf("%6s", "");
                 }
 
                 Ball[index].x = Ball[index].x + 1;
@@ -1125,17 +1098,17 @@ void MoveBall(int index)
 
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[1]);
+                printf("%6s", BALL_SHAPE[1]);
             }
             else
             {
                 SetConsoleTextAttribute(g_hConsoleOutput, 0x0F);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+                printf("%6s", "");
                 Ball[index].x = Ball[index].x + 1;
                 Ball[index].y = Ball[index].y - 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[2]);
+                printf("%6s", BALL_SHAPE[2]);
             }
         }
     }
@@ -1196,7 +1169,7 @@ void MoveBall(int index)
                 else if (potVal[Ball[index].x][Ball[index].y] == 0)
                 {
                     SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-                    printf("%2s", "");
+                    printf("%6s", "");
                 }
 
                 Ball[index].x = Ball[index].x + 1;
@@ -1204,17 +1177,17 @@ void MoveBall(int index)
 
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[1]);
+                printf("%6s", BALL_SHAPE[1]);
             }
             else
             {
                 SetConsoleTextAttribute(g_hConsoleOutput, 0x0F);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+                printf("%6s", "");
                 Ball[index].x = Ball[index].x + 1;
                 Ball[index].y = Ball[index].y + 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[2]);
+                printf("%6s", BALL_SHAPE[2]);
             }
         }
     }
@@ -1274,7 +1247,7 @@ void MoveBall(int index)
                 else if (potVal[Ball[index].x][Ball[index].y] == 0)
                 {
                     SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-                    printf("%2s", "");
+                    printf("%6s", "");
                 }
 
                 Ball[index].x = Ball[index].x - 1;
@@ -1282,17 +1255,17 @@ void MoveBall(int index)
 
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[1]);
+                printf("%6s", BALL_SHAPE[1]);
             }
             else
             {
                 SetConsoleTextAttribute(g_hConsoleOutput, 0x0F);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+                printf("%6s", "");
                 Ball[index].x = Ball[index].x - 1;
                 Ball[index].y = Ball[index].y + 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[2]);
+                printf("%6s", BALL_SHAPE[2]);
             }
         }
     }
@@ -1346,7 +1319,7 @@ void MoveBall(int index)
                 else if (potVal[Ball[index].x][Ball[index].y] == 0)
                 {
                     SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-                    printf("%2s", "");
+                    printf("%6s", "");
                 }
 
                 Ball[index].x = Ball[index].x - 1;
@@ -1354,17 +1327,17 @@ void MoveBall(int index)
 
                 SetConsoleTextAttribute(g_hConsoleOutput, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[1]);
+                printf("%6s", BALL_SHAPE[1]);
             }
             else
             {
                 SetConsoleTextAttribute(g_hConsoleOutput, 0x0F);
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%2s", "");
+                printf("%6s", "");
                 Ball[index].x = Ball[index].x - 1;
                 Ball[index].y = Ball[index].y - 1;
                 gotoxy(Ball[index].x, Ball[index].y);
-                printf("%s", BALL_SHAPE[2]);
+                printf("%6s", BALL_SHAPE[2]);
             }
         }
     }
